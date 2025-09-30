@@ -3,15 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Screencut - Pro Screenshot Editor</title>
+    <title>ScreenShot Pro Editor - Professional Screenshot Editing</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-            --accent-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary: #ec4899;
+            --accent: #06b6d4;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --error: #ef4444;
             --neutral-50: #fafafa;
             --neutral-100: #f5f5f5;
             --neutral-200: #e5e5e5;
@@ -22,11 +26,16 @@
             --neutral-700: #404040;
             --neutral-800: #262626;
             --neutral-900: #171717;
+            --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --gradient-secondary: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --gradient-accent: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            --gradient-hero: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
             --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
             --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
             --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
             --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
             --shadow-2xl: 0 25px 50px -12px rgb(0 0 0 / 0.25);
+            --shadow-glow: 0 0 50px rgba(99, 102, 241, 0.3);
         }
 
         * {
@@ -35,142 +44,287 @@
             box-sizing: border-box;
         }
 
+        html {
+            scroll-behavior: smooth;
+        }
+
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            line-height: 1.7;
+            line-height: 1.6;
             color: var(--neutral-800);
-            background: var(--primary-gradient);
+            background: var(--gradient-hero);
             min-height: 100vh;
             overflow-x: hidden;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(20px);
-            border-radius: 32px;
-            padding: 60px;
-            box-shadow: var(--shadow-2xl);
-            border: 1px solid rgba(255, 255, 255, 0.2);
             position: relative;
-            overflow: hidden;
         }
 
-        .container::before {
+        /* Animated Background */
+        body::before {
             content: '';
-            position: absolute;
+            position: fixed;
             top: 0;
             left: 0;
-            right: 0;
-            height: 1px;
-            background: var(--primary-gradient);
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(120, 219, 255, 0.2) 0%, transparent 50%);
+            animation: backgroundShift 20s ease-in-out infinite;
+            z-index: -1;
         }
 
-        .header {
-            text-align: center;
-            margin-bottom: 80px;
-            position: relative;
+        @keyframes backgroundShift {
+            0%, 100% { transform: translateX(0) translateY(0) rotate(0deg); }
+            33% { transform: translateX(-20px) translateY(-10px) rotate(1deg); }
+            66% { transform: translateX(20px) translateY(10px) rotate(-1deg); }
         }
 
-        .logo {
-            font-family: 'Playfair Display', serif;
-            font-size: 4.5rem;
-            font-weight: 700;
-            background: var(--primary-gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin-bottom: 20px;
-            letter-spacing: -0.02em;
-            line-height: 1.1;
+        /* Floating Particles */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
         }
 
-        .subtitle {
-            color: var(--neutral-600);
-            font-size: 1.5rem;
-            font-weight: 500;
-            margin-bottom: 15px;
-            letter-spacing: 0.01em;
-        }
-
-        .tagline {
-            color: var(--neutral-500);
-            font-size: 1.125rem;
-            font-style: italic;
-            font-weight: 300;
-        }
-
-        .hero-section {
-            text-align: center;
-            margin-bottom: 80px;
-            padding: 60px 40px;
-            background: linear-gradient(135deg, var(--neutral-50) 0%, rgba(102, 126, 234, 0.05) 100%);
-            border-radius: 24px;
-            border: 1px solid var(--neutral-200);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .hero-section::before {
-            content: '';
+        .particle {
             position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(102, 126, 234, 0.1) 0%, transparent 70%);
+            width: 4px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.6);
+            border-radius: 50%;
             animation: float 6s ease-in-out infinite;
         }
 
+        .particle:nth-child(1) { left: 10%; animation-delay: 0s; }
+        .particle:nth-child(2) { left: 20%; animation-delay: 1s; }
+        .particle:nth-child(3) { left: 30%; animation-delay: 2s; }
+        .particle:nth-child(4) { left: 40%; animation-delay: 3s; }
+        .particle:nth-child(5) { left: 50%; animation-delay: 4s; }
+        .particle:nth-child(6) { left: 60%; animation-delay: 5s; }
+        .particle:nth-child(7) { left: 70%; animation-delay: 0.5s; }
+        .particle:nth-child(8) { left: 80%; animation-delay: 1.5s; }
+        .particle:nth-child(9) { left: 90%; animation-delay: 2.5s; }
+
         @keyframes float {
-            0%, 100% { transform: translateY(0px) rotate(0deg); }
-            50% { transform: translateY(-20px) rotate(180deg); }
+            0%, 100% { transform: translateY(100vh) scale(0); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-100vh) scale(1); opacity: 0; }
         }
 
-        .hero-section h2 {
-            color: var(--neutral-900);
-            margin-bottom: 24px;
-            font-size: 2.5rem;
+        /* Navigation */
+        .nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            padding: 20px 0;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .nav.scrolled {
+            background: rgba(255, 255, 255, 0.95);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.5rem;
             font-weight: 700;
-            letter-spacing: -0.02em;
-            position: relative;
-            z-index: 1;
+            color: white;
+            text-decoration: none;
+            transition: all 0.3s ease;
         }
 
-        .hero-section p {
-            font-size: 1.25rem;
-            color: var(--neutral-600);
+        .nav.scrolled .logo {
+            color: var(--neutral-900);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 40px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .nav.scrolled .nav-links a {
+            color: var(--neutral-700);
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--gradient-primary);
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 40px;
+            position: relative;
+            z-index: 10;
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            position: relative;
+            padding: 120px 0 80px;
+        }
+
+        .hero-content {
+            max-width: 800px;
+            position: relative;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            padding: 12px 24px;
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50px;
+            color: white;
+            font-size: 0.9rem;
+            font-weight: 500;
+            margin-bottom: 30px;
+            backdrop-filter: blur(10px);
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .hero-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 4.5rem;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 24px;
+            line-height: 1.1;
+            letter-spacing: -0.02em;
+            text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            animation: slideInUp 1s ease-out;
+        }
+
+        .hero-subtitle {
+            font-size: 1.5rem;
+            color: rgba(255, 255, 255, 0.9);
             margin-bottom: 40px;
+            font-weight: 400;
+            animation: slideInUp 1s ease-out 0.2s both;
+        }
+
+        .hero-description {
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 50px;
             max-width: 600px;
             margin-left: auto;
             margin-right: auto;
-            line-height: 1.6;
-            position: relative;
-            z-index: 1;
+            line-height: 1.7;
+            animation: slideInUp 1s ease-out 0.4s both;
         }
 
-        .cta-button {
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+            animation: slideInUp 1s ease-out 0.6s both;
+        }
+
+        .btn {
             display: inline-flex;
             align-items: center;
             gap: 12px;
             padding: 18px 36px;
-            background: var(--primary-gradient);
-            color: white;
-            text-decoration: none;
             border-radius: 50px;
             font-weight: 600;
-            font-size: 1.125rem;
+            font-size: 1.1rem;
+            text-decoration: none;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: var(--shadow-lg);
+            position: relative;
+            overflow: hidden;
             border: none;
             cursor: pointer;
-            position: relative;
-            z-index: 1;
-            overflow: hidden;
         }
 
-        .cta-button::before {
+        .btn-primary {
+            background: var(--gradient-primary);
+            color: white;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-2xl);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(10px);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-3px);
+        }
+
+        .btn::before {
             content: '';
             position: absolute;
             top: 0;
@@ -181,33 +335,54 @@
             transition: left 0.5s;
         }
 
-        .cta-button:hover::before {
+        .btn:hover::before {
             left: 100%;
         }
 
-        .cta-button:hover {
-            transform: translateY(-3px);
-            box-shadow: var(--shadow-xl);
+        /* Features Section */
+        .features {
+            padding: 120px 0;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            position: relative;
         }
 
-        .cta-button:active {
-            transform: translateY(-1px);
+        .section-header {
+            text-align: center;
+            margin-bottom: 80px;
+        }
+
+        .section-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 3rem;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 20px;
+            text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .section-subtitle {
+            font-size: 1.3rem;
+            color: rgba(255, 255, 255, 0.8);
+            max-width: 600px;
+            margin: 0 auto;
         }
 
         .features-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
             gap: 40px;
             margin-bottom: 80px;
         }
 
         .feature-card {
-            padding: 40px 32px;
-            background: rgba(255, 255, 255, 0.8);
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
             border-radius: 24px;
+            padding: 40px;
             text-align: center;
-            border: 1px solid var(--neutral-200);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            backdrop-filter: blur(20px);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
             overflow: hidden;
         }
@@ -217,9 +392,9 @@
             position: absolute;
             top: 0;
             left: 0;
-            width: 100%;
+            right: 0;
             height: 4px;
-            background: var(--primary-gradient);
+            background: var(--gradient-primary);
             transform: scaleX(0);
             transition: transform 0.3s ease;
         }
@@ -229,75 +404,62 @@
         }
 
         .feature-card:hover {
-            transform: translateY(-8px);
-            box-shadow: var(--shadow-xl);
-            border-color: rgba(102, 126, 234, 0.3);
+            transform: translateY(-10px);
+            box-shadow: var(--shadow-2xl);
+            border-color: rgba(255, 255, 255, 0.4);
         }
 
         .feature-icon {
-            font-size: 3rem;
+            font-size: 3.5rem;
             margin-bottom: 24px;
             display: block;
-            filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.1));
+            filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
+            animation: bounce 2s ease-in-out infinite;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-10px); }
+            60% { transform: translateY(-5px); }
         }
 
         .feature-card h3 {
-            color: var(--neutral-900);
-            margin-bottom: 16px;
+            font-family: 'Space Grotesk', sans-serif;
             font-size: 1.5rem;
             font-weight: 600;
-            letter-spacing: -0.01em;
+            color: white;
+            margin-bottom: 16px;
         }
 
         .feature-card p {
-            color: var(--neutral-600);
+            color: rgba(255, 255, 255, 0.8);
             font-size: 1rem;
             line-height: 1.6;
         }
 
-        .links-section {
-            margin-bottom: 60px;
-        }
-
-        .links-section h2 {
-            color: var(--neutral-900);
-            text-align: center;
-            margin-bottom: 40px;
-            font-size: 2rem;
-            font-weight: 700;
-            letter-spacing: -0.02em;
-            position: relative;
-        }
-
-        .links-section h2::after {
-            content: '';
-            position: absolute;
-            bottom: -12px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 60px;
-            height: 4px;
-            background: var(--primary-gradient);
-            border-radius: 2px;
+        /* Links Section */
+        .links {
+            padding: 120px 0;
+            background: rgba(255, 255, 255, 0.03);
         }
 
         .links-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 24px;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
         }
 
         .link-card {
-            padding: 32px 24px;
-            background: var(--primary-gradient);
-            color: white;
-            text-decoration: none;
+            background: var(--gradient-primary);
             border-radius: 20px;
+            padding: 40px 30px;
             text-align: center;
+            text-decoration: none;
+            color: white;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: var(--shadow-lg);
             position: relative;
             overflow: hidden;
+            box-shadow: var(--shadow-lg);
         }
 
         .link-card::before {
@@ -317,14 +479,15 @@
         }
 
         .link-card:hover {
-            transform: translateY(-6px);
+            transform: translateY(-8px);
             box-shadow: var(--shadow-2xl);
         }
 
         .link-card h3 {
-            margin-bottom: 12px;
-            font-size: 1.25rem;
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.3rem;
             font-weight: 600;
+            margin-bottom: 12px;
             position: relative;
             z-index: 1;
         }
@@ -336,20 +499,28 @@
             z-index: 1;
         }
 
-        .contact-section {
-            background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%);
-            padding: 48px 40px;
-            border-radius: 24px;
-            text-align: center;
-            margin-bottom: 40px;
-            border: 1px solid rgba(102, 126, 234, 0.1);
+        /* Contact Section */
+        .contact {
+            padding: 120px 0;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
         }
 
-        .contact-section h3 {
-            color: var(--neutral-900);
-            margin-bottom: 24px;
-            font-size: 1.75rem;
+        .contact-content {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 24px;
+            padding: 60px 40px;
+            text-align: center;
+            backdrop-filter: blur(20px);
+        }
+
+        .contact h3 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 2rem;
             font-weight: 600;
+            color: white;
+            margin-bottom: 30px;
         }
 
         .contact-info {
@@ -363,28 +534,29 @@
             display: flex;
             align-items: center;
             gap: 12px;
-            color: var(--neutral-700);
+            color: white;
             text-decoration: none;
-            padding: 12px 20px;
+            padding: 16px 24px;
             border-radius: 50px;
-            background: rgba(255, 255, 255, 0.8);
-            border: 1px solid var(--neutral-200);
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
             transition: all 0.3s ease;
             font-weight: 500;
+            backdrop-filter: blur(10px);
         }
 
         .contact-item:hover {
-            background: white;
-            box-shadow: var(--shadow-md);
-            transform: translateY(-2px);
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-lg);
         }
 
+        /* Footer */
         .footer {
+            padding: 60px 0;
             text-align: center;
-            margin-top: 60px;
-            padding-top: 40px;
-            border-top: 1px solid var(--neutral-200);
-            color: var(--neutral-500);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.7);
         }
 
         .footer p {
@@ -393,31 +565,48 @@
 
         /* Responsive Design */
         @media (max-width: 768px) {
-            .container {
-                padding: 40px 24px;
-                margin: 16px;
-                border-radius: 24px;
+            .nav-container {
+                padding: 0 20px;
             }
 
-            .logo {
+            .nav-links {
+                display: none;
+            }
+
+            .container {
+                padding: 0 20px;
+            }
+
+            .hero-title {
                 font-size: 3rem;
             }
 
-            .hero-section {
-                padding: 40px 24px;
+            .hero-subtitle {
+                font-size: 1.2rem;
             }
 
-            .hero-section h2 {
-                font-size: 2rem;
+            .hero-description {
+                font-size: 1rem;
             }
 
-            .hero-section p {
-                font-size: 1.125rem;
+            .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .btn {
+                width: 100%;
+                max-width: 300px;
+                justify-content: center;
+            }
+
+            .section-title {
+                font-size: 2.5rem;
             }
 
             .features-grid {
                 grid-template-columns: 1fr;
-                gap: 24px;
+                gap: 30px;
             }
 
             .links-grid {
@@ -426,7 +615,7 @@
 
             .contact-info {
                 flex-direction: column;
-                gap: 16px;
+                gap: 20px;
             }
 
             .contact-item {
@@ -435,25 +624,24 @@
         }
 
         @media (max-width: 480px) {
-            .container {
-                padding: 24px 16px;
-                margin: 8px;
-            }
-
-            .logo {
+            .hero-title {
                 font-size: 2.5rem;
             }
 
-            .hero-section {
-                padding: 32px 20px;
+            .section-title {
+                font-size: 2rem;
             }
 
             .feature-card {
-                padding: 32px 24px;
+                padding: 30px 20px;
+            }
+
+            .contact-content {
+                padding: 40px 20px;
             }
         }
 
-        /* Accessibility improvements */
+        /* Accessibility */
         @media (prefers-reduced-motion: reduce) {
             * {
                 animation-duration: 0.01ms !important;
@@ -462,58 +650,121 @@
             }
         }
 
-        /* Focus states for accessibility */
-        .cta-button:focus,
+        .btn:focus,
         .link-card:focus,
         .contact-item:focus {
-            outline: 2px solid var(--neutral-400);
+            outline: 2px solid rgba(255, 255, 255, 0.5);
             outline-offset: 2px;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <div class="logo">Screencut</div>
-            <div class="subtitle">Pro Screenshot Editor</div>
-            <div class="tagline">Transform ordinary screenshots into stunning visuals</div>
-        </div>
+    <!-- Floating Particles -->
+    <div class="particles">
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+    </div>
 
-        <div class="hero-section">
-            <h2>Create Beautiful Screenshots Instantly</h2>
-            <p>Screencut is the ultimate screenshot editor for iOS that transforms your ordinary screenshots into professional, eye-catching visuals with realistic device frames and stunning backgrounds.</p>
-            <a href="https://apps.apple.com/app/screencut" class="cta-button">Download on App Store</a>
+    <!-- Navigation -->
+    <nav class="nav" id="nav">
+        <div class="nav-container">
+            <a href="#" class="logo">ScreenShot Pro Editor</a>
+            <ul class="nav-links">
+                <li><a href="#features">Features</a></li>
+                <li><a href="#links">Support</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
         </div>
+    </nav>
 
-        <div class="features-grid">
-            <div class="feature-card">
-                <div class="feature-icon">📱</div>
-                <h3>Smart Device Frames</h3>
-                <p>iPhone, iPad, and MacBook frames that look incredibly realistic and professional.</p>
-            </div>
-            <div class="feature-card">
-                <div class="feature-icon">🎨</div>
-                <h3>Beautiful Templates</h3>
-                <p>50+ stunning gradient and pattern backgrounds to make your screenshots stand out.</p>
-            </div>
-            <div class="feature-card">
-                <div class="feature-icon">⚡</div>
-                <h3>Lightning Fast</h3>
-                <p>One-tap template application with instant preview and real-time editing.</p>
-            </div>
-            <div class="feature-card">
-                <div class="feature-icon">📱</div>
-                <h3>Social Media Ready</h3>
-                <p>Optimized for Instagram, Twitter, TikTok, and all your favorite platforms.</p>
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-badge">✨ Professional Screenshot Editing</div>
+                <h1 class="hero-title">ScreenShot Pro Editor</h1>
+                <p class="hero-subtitle">Transform ordinary screenshots into stunning visuals</p>
+                <p class="hero-description">
+                    The ultimate professional screenshot editor for iOS. Create beautiful, 
+                    eye-catching visuals with realistic device frames, stunning backgrounds, 
+                    and professional-grade editing tools.
+                </p>
+                <div class="cta-buttons">
+                    <a href="https://apps.apple.com/app/screencut" class="btn btn-primary">
+                        📱 Download on App Store
+                    </a>
+                    <a href="#features" class="btn btn-secondary">
+                        🎨 Explore Features
+                    </a>
+                </div>
             </div>
         </div>
+    </section>
 
-        <div class="links-section">
-            <h2>Support & Legal</h2>
+    <!-- Features Section -->
+    <section class="features" id="features">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Powerful Features</h2>
+                <p class="section-subtitle">
+                    Everything you need to create professional screenshots that stand out
+                </p>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">📱</div>
+                    <h3>Smart Device Frames</h3>
+                    <p>iPhone, iPad, and MacBook frames that look incredibly realistic and professional with perfect shadows and reflections.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🎨</div>
+                    <h3>Stunning Templates</h3>
+                    <p>50+ beautiful gradient and pattern backgrounds designed by professionals to make your screenshots stand out.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">⚡</div>
+                    <h3>Lightning Fast</h3>
+                    <p>One-tap template application with instant preview and real-time editing for maximum productivity.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📱</div>
+                    <h3>Social Media Ready</h3>
+                    <p>Optimized for Instagram, Twitter, TikTok, and all your favorite platforms with perfect aspect ratios.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔧</div>
+                    <h3>Advanced Editing</h3>
+                    <p>Professional editing tools including blur effects, text overlays, and precise positioning controls.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">💎</div>
+                    <h3>Premium Quality</h3>
+                    <p>Export in high resolution with perfect quality for presentations, portfolios, and marketing materials.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Links Section -->
+    <section class="links" id="links">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Support & Resources</h2>
+                <p class="section-subtitle">
+                    Get help, learn more, and stay connected
+                </p>
+            </div>
             <div class="links-grid">
                 <a href="SupportLinks.html" class="link-card">
-                    <h3>📞 Support</h3>
-                    <p>Get help and contact information</p>
+                    <h3>📞 Support Center</h3>
+                    <p>Get help and contact our support team</p>
                 </a>
                 <a href="terms.html" class="link-card">
                     <h3>⚖️ Terms of Service</h3>
@@ -521,37 +772,94 @@
                 </a>
                 <a href="privacy.html" class="link-card">
                     <h3>🔒 Privacy Policy</h3>
-                    <p>How we protect your data</p>
+                    <p>How we protect your data and privacy</p>
                 </a>
                 <a href="https://apps.apple.com/app/screencut" class="link-card">
                     <h3>🏪 App Store</h3>
-                    <p>Download Screencut now</p>
+                    <p>Download ScreenShot Pro Editor now</p>
                 </a>
             </div>
         </div>
+    </section>
 
-        <div class="contact-section">
-            <h3>📧 Contact Information</h3>
-            <div class="contact-info">
-                <div class="contact-item">
-                    <span>📧</span>
-                    <a href="mailto:support@codewithik.com">support@codewithik.com</a>
-                </div>
-                <div class="contact-item">
-                    <span>🌐</span>
-                    <a href="https://codewithik.com">codewithik.com</a>
-                </div>
-                <div class="contact-item">
-                    <span>🐦</span>
-                    <a href="https://twitter.com/codewithik">@codewithik</a>
+    <!-- Contact Section -->
+    <section class="contact" id="contact">
+        <div class="container">
+            <div class="contact-content">
+                <h3>📧 Get in Touch</h3>
+                <div class="contact-info">
+                    <a href="mailto:support@codewithik.com" class="contact-item">
+                        <span>📧</span>
+                        <span>support@codewithik.com</span>
+                    </a>
+                    <a href="https://codewithik.com" class="contact-item">
+                        <span>🌐</span>
+                        <span>codewithik.com</span>
+                    </a>
+                    <a href="https://twitter.com/codewithik" class="contact-item">
+                        <span>🐦</span>
+                        <span>@codewithik</span>
+                    </a>
                 </div>
             </div>
         </div>
+    </section>
 
-        <div class="footer">
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
             <p>&copy; 2024 CodeWithIK. All rights reserved.</p>
-            <p>Screencut - Create Beautiful Screenshots Instantly</p>
+            <p>ScreenShot Pro Editor - Professional Screenshot Editing</p>
         </div>
-    </div>
+    </footer>
+
+    <script>
+        // Navigation scroll effect
+        window.addEventListener('scroll', () => {
+            const nav = document.getElementById('nav');
+            if (window.scrollY > 100) {
+                nav.classList.add('scrolled');
+            } else {
+                nav.classList.remove('scrolled');
+            }
+        });
+
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Add intersection observer for animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        // Observe feature cards
+        document.querySelectorAll('.feature-card').forEach(card => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(30px)';
+            card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+            observer.observe(card);
+        });
+    </script>
 </body>
 </html>
